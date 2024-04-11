@@ -4,14 +4,17 @@ from DBconnection import SessionLocal, engine
 from typing import Dict, List
 import DBModels, Schemas
 import uvicorn
+
 DBModels.Base.metadata.create_all(bind=engine)
 app = FastAPI()
+
 def get_DB():
     DB = SessionLocal()
     try:
         yield DB
     finally:
         DB.close()
+        
 @app.post('/create_desserts', response_model=None, status_code=201)
 async def create_desserts(item:Schemas.Desserts, DB:Session=Depends(get_DB)):
     DB_item = DBModels.Desserts(name=item.name, description=item.description, dessert_type=item.dessert_type,
